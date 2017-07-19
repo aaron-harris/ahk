@@ -16,6 +16,7 @@ SendMode Input
 ;; include that I find ugly and distracting.
 
 #Include remap.ahk
+#Include keymap.ahk
 #Include windows.ahk
 #Include meta.ahk
 #Include emacs.ahk

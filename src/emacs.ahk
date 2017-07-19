@@ -4,6 +4,8 @@
 
 ;; This file contains functionality related to control of Emacs.
 
+#Include keymap.ahk
+
 ;; The cygwin directory.  Set via the CYGWIN environment variable.
 ;; Defaults to "C:\cygwin64".
 EnvGet, cygwin, CYGWIN
@@ -33,29 +35,31 @@ call_bash(command) {
 ;; Note that FORMS are wrapped in bash string-literal syntax, so both
 ;; single- and double-quotes should be escaped with backslashes (on
 ;; top of doubling double quotes for AHK).
-call_emacs(forms) {
+call_emacs(forms := "") {
     call_bash("emacsclient -a \""\"" -c -n -q -e "
               . "$'(progn (raise-frame) " . forms . ")'")
 }
 
-;;;;====================================================================
-;;;; End Auto-Execute Section
-Goto emacs_include
-;;;;====================================================================
-
-;;; Key to open new Emacs frame
-;;;============================
 ;; This keybinding opens a new emacsclient frame on the current
 ;; desktop.  Note that this keybinding overrides the default Windows
 ;; binding for `#e`, which opens File Explorer.
-#e::call_emacs("")
+global_keymap.bind("", "#{e}", Func("call_emacs"))
 
 ;;; Capture
 ;;;========
 ;; This keybinding triggers Org mode capture using emacsclient.  This
 ;; overrides the default Windows binding for Win+c, which launches
 ;; Cortana.
-#c::call_emacs("(org-display-capture-in-whole-frame)")
+global_keymap.bind("", "#{c}"
+	, Func("call_emacs").bind("(org-display-capture-in-whole-frame)"))
+
+;;;;====================================================================
+;;;; End Auto-Execute Section
+Goto emacs_include
+;;;;====================================================================
+
+;; Temporary, until keymaps are ready to go.
+#e::call_emacs()
 
 ;;;;====================================================================
 ;;;; End emacs.ahk

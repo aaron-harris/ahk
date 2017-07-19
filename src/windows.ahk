@@ -5,6 +5,11 @@
 ;; This file modifies hotkeys that exist by default in Windows,
 ;; particularly those that use the Windows key.
 
+#Include keymap.ahk
+
+global_keymap.bind("", "#{Enter}"
+	, Func("remove_hotkey").bind("^x@s{Enter}"))
+
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
 Goto windows_include
@@ -14,6 +19,7 @@ Goto windows_include
 ;; Emacs, if it is the currently active window.  With use of the prefix
 ;; sequences for modifier keys, this can allow Emacs to reuse the key.
 remove_hotkey(emacs_keys := "") {
+	;; MsgBox % "Hello!"
 	if WinActive("ahk_class Emacs") {
 		SendInput %emacs_keys%
 	}
@@ -21,7 +27,8 @@ remove_hotkey(emacs_keys := "") {
 }
 
 ;; Disable Win+<Enter> hotkey (the screen-reader).
-#Enter::remove_hotkey("^x@s{Enter}")
+;; bind_key("", "#{Enter}", Func("remove_hotkey").bind("^x@s{Enter}"))
+;; #Enter::remove_hotkey("^x@s{Enter}")
 
 ;;;;====================================================================
 ;;;; End windows.ahk

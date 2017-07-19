@@ -10,7 +10,7 @@ Goto explorer_include
 ;;;;====================================================================
 
 #IfWinActive ahk_exe explorer.exe
-	
+
 ;; Use `C-M-u` for "up directory" (`M-<up>`).
 ^!u::
 Send !{Up}

@@ -5,6 +5,11 @@
 ;; This file contains hotkey definitions that are used to control
 ;; AutoHotkey itself.
 
+#Include keymap.ahk
+
+global_keymap.bind("", "#{h}", Func("ahk_show_class"))
+global_keymap.bind("", "#{k}", Func("ahk_list_hotkeys"))
+
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
 Goto meta_include
@@ -14,15 +19,16 @@ Goto meta_include
 ;;
 ;; This is usable even on machines where we can't run Window Spy for
 ;; lack of administrative privileges.
-#h::
-    WinGetClass, class, A
-    MsgBox, The active window's class is "%class%"
-    return
+ahk_show_class() {
+	WinGetClass, class, A
+	MsgBox % "The active window's class is " . class
+	return
+}
 
-;; List all currently defined hotkeys.
-#k::ListHotkeys
+ahk_list_hotkeys() {
+	ListHotkeys
+}
 
-;; Suspend or unsuspend all hotkeys (except this one).
 #s::Suspend
 
 ;;;;====================================================================
