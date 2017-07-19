@@ -7,8 +7,8 @@
 
 #Include keymap.ahk
 
-global_keymap.bind("", "#{h}", Func("ahk_show_class"))
-global_keymap.bind("", "#{k}", Func("ahk_list_hotkeys"))
+global_keymap.bind("", "#h", Func("ahk_show_class"))
+global_keymap.bind("", "#k", Func("ahk_list_hotkeys"))
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section

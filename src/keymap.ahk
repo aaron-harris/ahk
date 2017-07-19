@@ -10,12 +10,11 @@
 prefix := ""
 
 ;; The global keymap.
-global_keymap := new Keymap()
-global_keymap.default_action := Func("self_insert")
+global_keymap := new Keymap("A", false)
+global_keymap.default_action := Func("insert")
 
-hello() {
-	MsgBox "Hello!"
-}
+;; The array of local keymaps.
+local_keymaps := []
 
 ;; A list of all hotkeys we want to use in our keymap.  No effort is made
 ;; to support non-US keyboard layouts.
@@ -43,7 +42,11 @@ all_modifiers := [ ""
 
 ;; Hotkeys we don't want to use the keymap for, to work around some kind
 ;; of technical limitation.
-blacklist := {"#s": true}
+;;
+;; #s - Suspend hotkey needs to be native so it doesn't suspend itself.
+;; !Tab, !+Tab - Alt-tab functionality is tetchy when handled in a keymap.
+;; ^x, ^g - Temporarily exempted until prefixes are sorted out.
+blacklist := {"#s": true, "!Tab": true, "!+Tab": true, "^x": true, "^g": true}
 
 ;; Make all hotkeys use the global keymap.
 for _, key in all_keys {
@@ -51,7 +54,7 @@ for _, key in all_keys {
 		hkey := modifier . key
 		if (!blacklist[hkey]) {
 			;; Commented out temporarily, until this feature is less buggy.
-			;; Hotkey % modifier . key, keymap_lookup
+			Hotkey % modifier . key, keymap_lookup
 		}
 	}
 }
@@ -62,17 +65,33 @@ Goto keymap_include
 ;;;;====================================================================
 
 class Keymap {
-	__New() {
-		this[""] := {}
+	
+	;; Associative array mapping prefixes to key bindings.
+	bindings := {"": {}}
+	
+	;; Context in which this keymap should be active.
+	context := "A"
+	
+	;; Construct an empty keymap.
+	;;
+	;; If the context parameter is supplied, the keymap is contextual
+	;; and will only be active when that context is in effect, as
+	;; determined by the `winActive` function (the context parameter is
+	;; a `winTitle` string).
+	;;
+	;; If the register parameter is true (or omitted), add this keymap
+	;; to the list of local keymaps.
+	__New(context := "A", register := true) {
+		global local_keymaps
+		
+		if (register) {
+			local_keymaps.push(this)
+		}
 	}
 	
 	;; Return true if the keymap should be active right now.
-	;;
-	;; Note that this method does not take the current prefix into
-	;; account, so that overrides for this method don't need to
-	;; re-implement the prefix-handling logic.
 	isActive() {
-		return true
+		return winActive(this.context)
 	}
 	
 	;; Default action to take for keys with no binding.
@@ -88,26 +107,42 @@ class Keymap {
 	
 	;; Execute the command associated with the given prefix and key.
 	;;
-	;; If the keymap is active and has a binding for A_ThisHotkey,
-	;; execute that command and then return true.  Otherwise, do nothing
-	;; and return false.
+	;; Return true if this action should be considered as consuming the
+	;; hotkey; if false is returned, then lower-priority keymaps are
+	;; consulted, and any bindings present in them may still be called.
+	;;
+	;; If the keymap is inactive, do nothing and return false.  If the
+	;; keymap is active but doesn't have a binding for this key, perform
+	;; the default action as given by the `default_action` method.
 	lookup(prefix, key) {
-		binding := this[prefix][key]
-		
+		if !(this.isActive()) {
+			return false
+		}
+
+		binding := this.bindings[prefix][key]
 		if (binding) {
 			binding.call()
 			return true
-		} else {
-			this.default_action(key)
 		}
+		
+		return this.default_action(key)
 	}
-
+	
 	;; Associate the given key (or key sequence, if a prefix is supplied)
 	;; with a command in this keymap.
 	bind(prefix, key, command) {
-		this[prefix][key] := command
+		this.bindings[prefix][brace_key(key)] := command
 	}
 	
+	;; Remap the given key or key sequence to a new key sequence.
+	;;
+	;; Note that this is not the same thing as remapping a key in Emacs;
+	;; the remapping will bypass not only other keymap bindings, but
+	;; also ordinary hotkey definitions.  It's just a convenient way to
+	;; bind a key sequence to the `Send` command.
+	remap(prefix, key, newKeys) {
+		this.bind(prefix, key, Func("insert").bind(this, newKeys))
+	}	
 }
 
 ;; Wrap key names in braces, for use with Send.
@@ -115,26 +150,33 @@ brace_key(key) {
 	return RegExReplace(key, "([!+#^]*)(.+)", "$1{$2}")
 }
 
-;; Execute the command associated with A_ThisHotkey in the global
-;; keymap.
+;; Execute the command associated with A_ThisHotkey in the currently
+;; active keymaps.  Try local keymaps first, then the global keymap,
+;; and stop when any keymap's `lookup` method returns true (indicating
+;; that the key has been consumed).
 keymap_lookup() {
 	global prefix
 	global global_keymap
+	global local_keymaps
 	
 	key := brace_key(A_ThisHotkey)
+	
+	for _, map in local_keymaps {
+		if (map.lookup(prefix, key)) {
+			return
+		}
+	}
+	
 	global_keymap.lookup(prefix, key)
 }
 
-;; Send key, ignoring any possible hotkeys.
+;; Insert keys, ignoring any possible hotkeys.
 ;;
 ;; Ignore the first parameter (an object reference, so this function
 ;; can be used as an object method).
-;;
-;; This is the default action for the global keymap, so that keys retain
-;; their usual behavior when there is no specific binding for them.
-self_insert(_this, key) {
+insert(_this, keys) {
 	Suspend On
-	Send % key
+	Send % keys
 	Suspend Off
 }
 

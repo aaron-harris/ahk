@@ -43,23 +43,20 @@ call_emacs(forms := "") {
 ;; This keybinding opens a new emacsclient frame on the current
 ;; desktop.  Note that this keybinding overrides the default Windows
 ;; binding for `#e`, which opens File Explorer.
-global_keymap.bind("", "#{e}", Func("call_emacs"))
+global_keymap.bind("", "#e", Func("call_emacs"))
 
 ;;; Capture
 ;;;========
 ;; This keybinding triggers Org mode capture using emacsclient.  This
 ;; overrides the default Windows binding for Win+c, which launches
 ;; Cortana.
-global_keymap.bind("", "#{c}"
+global_keymap.bind("", "#c"
 	, Func("call_emacs").bind("(org-display-capture-in-whole-frame)"))
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
 Goto emacs_include
 ;;;;====================================================================
-
-;; Temporary, until keymaps are ready to go.
-#e::call_emacs()
 
 ;;;;====================================================================
 ;;;; End emacs.ahk

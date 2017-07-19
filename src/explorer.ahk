@@ -4,20 +4,18 @@
 
 ;; This file defines hotkeys for use in Windows Explorer.
 
+#Include keymap.ahk
+
+explorer_keymap := new Keymap("ahk_exe explorer.exe", true)
+
+;; Use `M-u` for "up directory" (`M-<up>`).
+explorer_keymap.remap("", "!u", "!{Up}")
+
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
 Goto explorer_include
 ;;;;====================================================================
 
-#IfWinActive ahk_exe explorer.exe
-
-;; Use `C-M-u` for "up directory" (`M-<up>`).
-^!u::
-Send !{Up}
-return
-
-#IfWinActive
-	
 ;;;;====================================================================
 ;;;; End explorer.ahk
 explorer_include:
