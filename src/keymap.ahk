@@ -84,6 +84,8 @@ class Keymap {
 	__New(context := "A", register := true) {
 		global local_keymaps
 		
+		this.context := context
+		
 		if (register) {
 			local_keymaps.push(this)
 		}
