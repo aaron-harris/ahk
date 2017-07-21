@@ -2,12 +2,26 @@
 ;;;; KEYMAPS
 ;;;;====================================================================
 
-;; This file contains support for Emacs-style prefix keys.
+;;; This file contains support for Emacs-style keymaps.  The main
+;;; purpose is to enable multiple-stroke key sequences as hotkeys, but
+;;; enabling this requires routing all possible hotkeys (or nearly all)
+;;; through the keymap structure.  Additional features (like numeric
+;;; prefixes and transient mark support) will be added to this
+;;; structure in the future.
 
-;; The current prefix, represented as a string of hotkeys.  For example,
-;; if `C-x` is a known prefix key, then after pressing `C-x`, the prefix
-;; will be the string "^x".
-prefix := ""
+
+;; The current prefix object.  It has the following properties:
+;;
+;; keys: The current key prefix.  For instance, if `C-x` has just been
+;;   pressed, and `C-x` is a known prefix key, this will be the string
+;;   "^x".  Keys are expressed in the same format as `A_ThisHotkey` and
+;;   are delimited by spaces.
+;;
+;; next: The key prefix that will be used for the next command.  This
+;;   value is set by commands that manipulate the prefix, so the code
+;;   that resets the prefix after each keymap lookup will preserve their
+;;   changes.
+prefix := {keys: "", next: ""}
 
 ;; The global keymap.
 global_keymap := new Keymap("A", false)
@@ -45,8 +59,7 @@ all_modifiers := [ ""
 ;;
 ;; #s - Suspend hotkey needs to be native so it doesn't suspend itself.
 ;; !Tab, !+Tab - Alt-tab functionality is tetchy when handled in a keymap.
-;; ^x, ^g - Temporarily exempted until prefixes are sorted out.
-blacklist := {"#s": true, "!Tab": true, "!+Tab": true, "^x": true, "^g": true}
+blacklist := {"#s": true, "!Tab": true, "!+Tab": true}
 
 ;; Make all hotkeys use the global keymap.
 for _, key in all_keys {
@@ -57,6 +70,15 @@ for _, key in all_keys {
 			Hotkey % modifier . key, keymap_lookup
 		}
 	}
+}
+
+global_keymap.bind("", "F12", Func("prefix_key"))
+global_keymap.bind("F12", "F12", Func("hello"))
+
+global_keymap.list_all()
+
+hello() {
+	MsgBox % "Hello!"
 }
 
 ;;;;====================================================================
@@ -120,7 +142,7 @@ class Keymap {
 		if !(this.isActive()) {
 			return false
 		}
-
+		
 		binding := this.bindings[prefix][key]
 		if (binding) {
 			binding.call()
@@ -133,6 +155,9 @@ class Keymap {
 	;; Associate the given key (or key sequence, if a prefix is supplied)
 	;; with a command in this keymap.
 	bind(prefix, key, command) {
+		if !(this.bindings[prefix]) {
+			this.bindings[prefix] := {}
+		}
 		this.bindings[prefix][brace_key(key)] := command
 	}
 	
@@ -144,7 +169,7 @@ class Keymap {
 	;; bind a key sequence to the `Send` command.
 	remap(prefix, key, newKeys) {
 		this.bind(prefix, key, Func("insert").bind(this, newKeys))
-	}	
+	}
 }
 
 ;; Wrap key names in braces, for use with Send.
@@ -164,12 +189,14 @@ keymap_lookup() {
 	key := brace_key(A_ThisHotkey)
 	
 	for _, map in local_keymaps {
-		if (map.lookup(prefix, key)) {
+		if (map.lookup(prefix.keys, key)) {
+			clean_prefix()
 			return
 		}
 	}
 	
-	global_keymap.lookup(prefix, key)
+	global_keymap.lookup(prefix.keys, key)
+	clean_prefix()
 }
 
 ;; Insert keys, ignoring any possible hotkeys.
@@ -184,6 +211,26 @@ insert(_this, keys) {
 	Send % keys
 	SetStoreCapslockMode On
 	Suspend Off
+}
+
+;; Add `A_ThisHotkey` to the current prefix.
+;;
+;; Registering this command in a keymap creates a prefix map.
+prefix_key() {
+	global prefix
+	
+	key := A_ThisHotkey
+	spacer := (prefix.keys == "") ? "" : " "
+	
+	prefix.next := prefix.keys . spacer . key
+}
+
+;; Reset the current prefix.
+clean_prefix() {
+	global prefix
+	
+	prefix.keys := prefix.next
+	prefix.next := ""
 }
 
 ;;;;====================================================================
