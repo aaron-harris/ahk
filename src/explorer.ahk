@@ -2,9 +2,7 @@
 ;;;; WINDOWS EXPLORER FEATURES
 ;;;;====================================================================
 
-;; This file defines hotkeys for use in Windows Explorer.
-
-#Include keymap.ahk
+;;; This file defines hotkeys for use in Windows Explorer.
 
 explorer_keymap := new Keymap("ahk_exe explorer.exe", true)
 

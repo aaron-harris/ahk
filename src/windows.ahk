@@ -2,10 +2,8 @@
 ;;;; WINDOWS HOTKEYS
 ;;;;====================================================================
 
-;; This file modifies hotkeys that exist by default in Windows,
-;; particularly those that use the Windows key.
-
-#Include keymap.ahk
+;;; This file modifies hotkeys that exist by default in Windows,
+;;; particularly those that use the Windows key.
 
 global_keymap.bind("", "#Enter"
 	, Func("remove_hotkey").bind("^x@s{Enter}"))

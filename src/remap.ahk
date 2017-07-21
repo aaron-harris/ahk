@@ -2,7 +2,7 @@
 ;;;; GLOBAL REMAPPINGS
 ;;;;====================================================================
 
-;; This file contains basic, global remappings.
+;;; This file contains basic, global remappings.
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section

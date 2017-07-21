@@ -2,10 +2,8 @@
 ;;;; META-HOTKEYS
 ;;;;====================================================================
 
-;; This file contains hotkey definitions that are used to control
-;; AutoHotkey itself.
-
-#Include keymap.ahk
+;;; This file contains hotkey definitions that are used to control
+;;; AutoHotkey itself.
 
 global_keymap.bind("", "#h", Func("ahk_show_class"))
 global_keymap.bind("", "#k", Func("ahk_list_hotkeys"))

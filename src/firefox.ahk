@@ -2,9 +2,7 @@
 ;;;; FIREFOX FEATURES
 ;;;;====================================================================
 
-;; This file contains hotkeys and hotstrings for use in Firefox.
-
-#include keymap.ahk
+;;; This file contains hotkeys and hotstrings for use in Firefox.
 
 firefox_keymap := new Keymap("ahk_class MozillaWindowClass")
 

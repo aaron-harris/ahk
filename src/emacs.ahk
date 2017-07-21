@@ -2,9 +2,7 @@
 ;;;; EMACS HOTKEYS
 ;;;;====================================================================
 
-;; This file contains functionality related to control of Emacs.
-
-#Include keymap.ahk
+;;; This file contains functionality related to control of Emacs.
 
 ;; The cygwin directory.  Set via the CYGWIN environment variable.
 ;; Defaults to "C:\cygwin64".
