@@ -6,31 +6,39 @@
 
 editing_keymap := new Keymap(null, "family")
 
+;; Whether there is an active region at the moment.
+mark := false
+
 ;; `C-x` prefix key
 editing_keymap.bind("", "^x", Func("prefix_key"))
 
 ;; Navigation
-editing_keymap.remap("", "^f", "{Right}")
-editing_keymap.remap("", "^b", "{Left}")
-editing_keymap.remap("", "^n", "{Down}")
-editing_keymap.remap("", "^p", "{Up}")
-editing_keymap.remap("", "^a", "{Home}")
-editing_keymap.remap("", "^e", "{End}")
-editing_keymap.remap("", "!f", "^{Right}")
-editing_keymap.remap("", "!b", "^{Left}")
+editing_keymap.bind("", "^b", Func("shift_select").bind("{Left}"))
+editing_keymap.bind("", "^f", Func("shift_select").bind("{Right}"))
+editing_keymap.bind("", "^p", Func("shift_select").bind("{Up}"))
+editing_keymap.bind("", "^n", Func("shift_select").bind("{Down}"))
+editing_keymap.bind("", "^a", Func("shift_select").bind("{Home}"))
+editing_keymap.bind("", "^e", Func("shift_select").bind("{End}"))
+editing_keymap.bind("", "!b", Func("shift_select").bind("^{Left}"))
+editing_keymap.bind("", "!f", Func("shift_select").bind("^{Right}"))
 
 ;; Selection
 editing_keymap.remap("^x", "h", "^a")
+editing_keymap.bind("", "^Space", Func("set_mark"))
+editing_keymap.bind("", "^g", Func("clear_selection"))
 
 ;; Kill/delete
 editing_keymap.remap("", "^d", "{Delete}")
 editing_keymap.remap("", "!d", "^+{Right}^x")
 editing_keymap.remap("", "^w", "^x")
-editing_keymap.remap("", "!w", "^c")
+editing_keymap.bind("", "!w", Func("copy_region"))
 editing_keymap.remap("", "^k", "+{End}^x")
 
 ;; Yank
 editing_keymap.remap("", "^y", "^v")
+
+;; Undo
+editing_keymap.remap("", "^/", "^z")
 
 
 ;; Minor apps in this family:
@@ -40,6 +48,38 @@ editing_keymap.addContext("ahk_class Notepad")
 ;;;; End Auto-Execute Section
 Goto editing_include
 ;;;;====================================================================
+
+;; Activate the region, to begin selecting text.
+set_mark() {
+	global mark
+	mark := true
+}
+
+;; Input the given keys; use shift to select text if the mark is active.
+shift_select(keys) {
+	global mark
+	
+	shift_it := (mark) ? "+" : ""
+	insert(this, shift_it . keys)
+}
+
+;; Clear the current text selection.
+clear_selection() {
+	global mark
+	mark := false
+
+	;; Since most applications don't have a "clear selection" command,
+	;; we simulate this by clicking on the caret.
+	MouseGetPos, x, y
+	Click %A_CaretX%, %A_CaretY%
+	MouseMove, x, y, 0
+}
+
+;; Copy the region and then de-select it, as in Emacs.
+copy_region() {
+	insert(this, "^c")
+	clear_selection()
+}
 
 ;;;;====================================================================
 ;;;; End meta.ahk
