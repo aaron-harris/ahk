@@ -20,7 +20,7 @@ Goto windows_include
 ;; sequences for modifier keys, this can allow Emacs to reuse the key.
 remove_hotkey(emacs_keys := "") {
 	if winActive("ahk_class Emacs") {
-		SendInput %emacs_keys%
+		insert(this, emacs_keys)
 	}
 	;; Do nothing if Emacs is not active.
 }
