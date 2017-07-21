@@ -30,6 +30,13 @@ global_keymap.default_action := Func("insert")
 ;; The array of local keymaps.
 local_keymaps := []
 
+;; The array of so-called "family" keymaps.
+;;
+;; These are intended for use by multiple apps, and are lower priority
+;; than other local keymaps, so that each app can override individual
+;; bindings for its family.
+family_keymaps := []
+
 ;; A list of all hotkeys we want to use in our keymap.  No effort is made
 ;; to support non-US keyboard layouts.
 all_keys := [
@@ -72,15 +79,6 @@ for _, key in all_keys {
 	}
 }
 
-global_keymap.bind("", "F12", Func("prefix_key"))
-global_keymap.bind("F12", "F12", Func("hello"))
-
-global_keymap.list_all()
-
-hello() {
-	MsgBox % "Hello!"
-}
-
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
 Goto keymap_include
@@ -101,14 +99,27 @@ class Keymap {
 	;; determined by the `winActive` function (the context parameter is
 	;; a `winTitle` string).
 	;;
-	;; If the register parameter is true (or omitted), add this keymap
-	;; to the list of local keymaps.
+	;; The register parameter handles whether and how this keymap should
+	;; be added to the list of local keymaps.  Possible values are as
+	;; follows:
+	;;
+	;; False:
+	;;   Do nothing.
+	;;
+	;; "family":
+	;;   Add the keymap as a lower-priority family keymap.
+	;;
+	;; Any other truthy value, or omitted:
+	;;   Add the keymap as an ordinary local keymap.
 	__New(context := "A", register := true) {
 		global local_keymaps
+		global family_keymaps
 		
 		this.context := context
 		
-		if (register) {
+		if (register == "family") {
+			family_keymaps.push(this)
+		} else if (register) {
 			local_keymaps.push(this)
 		}
 	}
@@ -185,13 +196,16 @@ keymap_lookup() {
 	global prefix
 	global global_keymap
 	global local_keymaps
+	global family_keymaps
 	
 	key := brace_key(A_ThisHotkey)
 	
-	for _, map in local_keymaps {
-		if (map.lookup(prefix.keys, key)) {
-			clean_prefix()
-			return
+	for _, keymaps in [local_keymaps, family_keymaps] {
+		for _, map in keymaps {
+			if (map.lookup(prefix.keys, key)) {
+				clean_prefix()
+				return
+			}
 		}
 	}
 	
