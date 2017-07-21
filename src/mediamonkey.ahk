@@ -11,9 +11,7 @@ mediamonkey_props_keymap.remap("", "+{Enter}", "|")
 
 mediamonkey_keymap := new Keymap("ahk_exe MediaMonkey.exe")
 
-;; Use `C-[` and `C-]` to navigate between tabs.
-mediamonkey_keymap.remap("", "^[", "{Blind}^+{Tab}")
-mediamonkey_keymap.remap("", "^]", "{Blind}^{Tab}")
+tabs_keymap.addContext("ahk_exe MediaMonkey.exe")
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section

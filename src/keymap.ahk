@@ -89,8 +89,8 @@ class Keymap {
 	;; Associative array mapping prefixes to key bindings.
 	bindings := {"": {}}
 	
-	;; Context in which this keymap should be active.
-	context := "A"
+	;; Contexts in which this keymap should be active.
+	contexts := []
 	
 	;; Construct an empty keymap.
 	;;
@@ -115,7 +115,7 @@ class Keymap {
 		global local_keymaps
 		global family_keymaps
 		
-		this.context := context
+		this.contexts.push(context)
 		
 		if (register == "family") {
 			family_keymaps.push(this)
@@ -126,7 +126,12 @@ class Keymap {
 	
 	;; Return true if the keymap should be active right now.
 	isActive() {
-		return winActive(this.context)
+		for _, context in this.contexts {
+			if winActive(context) {
+				return true
+			}
+		}
+		return false
 	}
 	
 	;; Default action to take for keys with no binding.
@@ -180,6 +185,12 @@ class Keymap {
 	;; bind a key sequence to the `Send` command.
 	remap(prefix, key, newKeys) {
 		this.bind(prefix, key, Func("insert").bind(this, newKeys))
+	}
+	
+	;; Make this keymap active in a new context, in addition to any
+	;; previously registered contexts.
+	addContext(context) {
+		this.contexts.push(context)
 	}
 }
 

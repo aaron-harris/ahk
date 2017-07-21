@@ -33,6 +33,9 @@ firefox_keymap.bind("", "^x", Func("prefix_key"))
 firefox_keymap.bind("^x", "1", Func("close_other_tabs"))
 firefox_keymap.remap("^x", "0", "^{F4}")
 
+;; Register with the tabs family keymap.
+tabs_keymap.addContext("ahk_class MozillaWindowClass")
+
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
 Goto firefox_include

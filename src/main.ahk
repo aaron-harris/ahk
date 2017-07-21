@@ -15,12 +15,19 @@ SendMode Input
 ;; but this would cause AHK Studio to display an erroneous, empty
 ;; include that I find ugly and distracting.
 
+;; Core functionality
 #Include remap.ahk
 #Include keymap.ahk
-#Include windows.ahk
+
+;; Global functionality
 #Include meta.ahk
+#Include windows.ahk
 #Include emacs.ahk
+
+;; App families
+#Include tabs.ahk
+
+;; App-specific functionality
+#Include explorer.ahk
 #Include firefox.ahk
 #Include mediamonkey.ahk
-
-#Include explorer.ahk
