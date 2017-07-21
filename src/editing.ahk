@@ -21,6 +21,8 @@ editing_keymap.bind("", "^a", Func("shift_select").bind("{Home}"))
 editing_keymap.bind("", "^e", Func("shift_select").bind("{End}"))
 editing_keymap.bind("", "!b", Func("shift_select").bind("^{Left}"))
 editing_keymap.bind("", "!f", Func("shift_select").bind("^{Right}"))
+editing_keymap.bind("", "!+,", Func("shift_select").bind("^{Home}"))
+editing_keymap.bind("", "!+.", Func("shift_select").bind("^{End}"))
 
 ;; Selection
 editing_keymap.remap("^x", "h", "^a")
@@ -64,15 +66,39 @@ shift_select(keys) {
 }
 
 ;; Clear the current text selection.
-clear_selection() {
+;;
+;; Since most applications don't have a built-in "clear selection"
+;; command, we must use some kind of workaround.  The `method` parameter
+;; determines which such workaround to use.  The options are as follows:
+;;
+;; "mouse", or omitted:
+;;   Attempt to click on the caret.
+;;
+;; "paste":
+;;   Delete and re-insert the selected text.  Note that this method will
+;;   move the caret to the end of the selection, even if it was at the
+;;   beginning.
+clear_selection(method := "mouse") {
 	global mark
 	mark := false
+	
+	;; If there's no selection, we don't need to do anything anyway.
+	ControlGet, selText, Selected
+	if (selText == "") {
+		return
+	}
 
-	;; Since most applications don't have a "clear selection" command,
-	;; we simulate this by clicking on the caret.
-	MouseGetPos, x, y
-	Click %A_CaretX%, %A_CaretY%
-	MouseMove, x, y, 0
+	if (method == "mouse") {
+		MouseGetPos, x, y
+		MouseMove, %A_CaretX%, %A_CaretY%, 0
+		Click %A_CaretX%, %A_CaretY%
+		MouseMove, x, y, 0
+	}
+	
+	if (method == "paste") {
+		insert(this, "{Delete}")
+		SendRaw % selText
+	}
 }
 
 ;; Copy the region and then de-select it, as in Emacs.

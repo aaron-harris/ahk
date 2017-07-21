@@ -4,7 +4,8 @@
 
 ;;; This file contains hotkeys and hotstrings for use in Firefox.
 
-firefox_keymap := new Keymap("ahk_class MozillaWindowClass")
+firefox_context := "ahk_class MozillaWindowClass"
+firefox_keymap := new Keymap(firefox_context)
 
 ;; Use `C-[` and `C-]` to navigate between tabs.
 firefox_keymap.remap("", "^[", "{Blind}^+{Tab}")
@@ -31,8 +32,12 @@ firefox_keymap.bind("", "^x", Func("prefix_key"))
 firefox_keymap.bind("^x", "1", Func("close_other_tabs"))
 firefox_keymap.remap("^x", "0", "^{F4}")
 
-;; Register with the tabs family keymap.
-tabs_keymap.addContext("ahk_class MozillaWindowClass")
+;; Register with appropriate family keymaps.
+for _, keymap in [
+		, editing_keymap
+		, tabs_keymap] {
+	keymap.addContext(firefox_context)
+}
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
