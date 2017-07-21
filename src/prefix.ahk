@@ -104,7 +104,7 @@ with_Cx(action, args*) {
         cx_prefix := 0
         %action%(args*)
     } else {
-        Send %key%
+		insert(this, key)
     }
 }
 
