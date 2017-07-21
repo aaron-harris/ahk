@@ -174,11 +174,15 @@ keymap_lookup() {
 
 ;; Insert keys, ignoring any possible hotkeys.
 ;;
+;; Note that this method, unlike `Send`, is Capslock-sensitive.
+;;
 ;; Ignore the first parameter (an object reference, so this function
 ;; can be used as an object method).
 insert(_this, keys) {
 	Suspend On
+	SetStoreCapslockMode Off
 	Send % keys
+	SetStoreCapslockMode On
 	Suspend Off
 }
 
