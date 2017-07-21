@@ -31,3 +31,4 @@ SendMode Input
 #Include explorer.ahk
 #Include firefox.ahk
 #Include mediamonkey.ahk
+#Include editing.ahk
