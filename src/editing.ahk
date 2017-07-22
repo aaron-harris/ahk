@@ -42,8 +42,9 @@ editing_keymap.bind("", "^k", Func("kill_line"))
 ;; Yank
 editing_keymap.remap("", "^y", "^v")
 
-;; Undo
+;; Undo/redo
 editing_keymap.remap("", "^/", "^z")
+editing_keymap.remap("", "^!/", "^y")
 
 ;; Minor apps in this family:
 editing_keymap.addContext("ahk_class Notepad")
