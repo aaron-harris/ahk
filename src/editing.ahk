@@ -29,6 +29,9 @@ editing_keymap.remap("^x", "h", "^a")
 editing_keymap.bind("", "^Space", Func("set_mark"))
 editing_keymap.bind("", "^g", Func("clear_selection"))
 
+;; Editing
+editing_keymap.remap("", "^o", "{Enter}{Left}")
+
 ;; Kill/delete
 editing_keymap.remap("", "^d", "{Delete}")
 editing_keymap.remap("", "!d", "^+{Right}^x")
