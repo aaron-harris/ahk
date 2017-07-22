@@ -32,9 +32,9 @@ editing_keymap.bind("", "^g", Func("clear_selection"))
 ;; Kill/delete
 editing_keymap.remap("", "^d", "{Delete}")
 editing_keymap.remap("", "!d", "^+{Right}^x")
-editing_keymap.remap("", "^w", "^x")
+editing_keymap.bind("", "^w", Func("kill_region"))
 editing_keymap.bind("", "!w", Func("copy_region"))
-editing_keymap.remap("", "^k", "+{End}^x")
+editing_keymap.bind("", "^k", Func("kill_line"))
 
 ;; Yank
 editing_keymap.remap("", "^y", "^v")
@@ -50,10 +50,12 @@ editing_keymap.addContext("ahk_class Notepad")
 Goto editing_include
 ;;;;====================================================================
 
-;; Activate the region, to begin selecting text.
-set_mark() {
+;; With no argument (or a truthy argument), activate the region, so that
+;; subsequent navigation commands select text.  With a falsey argument,
+;; deactivate the region.
+set_mark(value := true) {
 	global mark
-	mark := true
+	mark := value
 }
 
 ;; Input the given keys; use shift to select text if the mark is active.
@@ -68,7 +70,7 @@ shift_select(keys) {
 ;;
 ;; Since most applications don't have a built-in "clear selection"
 ;; command, we must use some kind of workaround.  The `method` parameter
-;; determines which such workaround to use.  The options are as follows:
+;; determines which such workaround to use.  The options are as follows:
 ;;
 ;; "mouse", or omitted:
 ;;   Attempt to click on the caret.
@@ -78,8 +80,7 @@ shift_select(keys) {
 ;;   move the caret to the end of the selection, even if it was at the
 ;;   beginning.
 clear_selection(method := "mouse") {
-	global mark
-	mark := false
+	set_mark(false)
 	
 	;; If there's no selection, we don't need to do anything anyway.
 	ControlGet, selText, Selected
@@ -104,6 +105,18 @@ clear_selection(method := "mouse") {
 copy_region() {
 	insert(this, "^c")
 	clear_selection()
+}
+
+;; Cut the region and deactivate the mark.
+kill_region() {
+	insert(this, "^x")
+	set_mark(false)
+}
+
+;; Cut until the end of the line and deactivate the mark.
+kill_line() {
+	insert(this, "+{End}^x")
+	set_mark(false)
 }
 
 ;;;;====================================================================
