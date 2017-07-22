@@ -26,6 +26,7 @@ Goto ahk_studio_include
 
 ^a::
 ^e::
+^y::
 ^[::
 ^]::
 	return

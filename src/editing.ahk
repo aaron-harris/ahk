@@ -16,12 +16,12 @@ editing_keymap.remap("", "^o", "{Enter}{Left}")
 ;; Kill/delete
 editing_keymap.remap("", "^d", "{Delete}")
 editing_keymap.remap("", "!d", "^+{Right}^x")
-editing_keymap.bind("", "^w", Func("kill_region"))
+editing_keymap.bind("", "^w", Func("finalize_mark").bind("^x"))
 editing_keymap.bind("", "!w", Func("copy_region"))
-editing_keymap.bind("", "^k", Func("kill_line"))
+editing_keymap.bind("", "^k", Func("finalize_mark").bind("+{End}^x"))
 
 ;; Yank
-editing_keymap.remap("", "^y", "^v")
+editing_keymap.bind("", "^y", Func("finalize_mark").bind("^v"))
 
 ;; Undo/redo
 editing_keymap.remap("", "^/", "^z")
@@ -41,15 +41,9 @@ copy_region() {
 	clear_selection()
 }
 
-;; Cut the region and deactivate the mark.
-kill_region() {
-	insert(this, "^x")
-	set_mark(false)
-}
-
-;; Cut until the end of the line and deactivate the mark.
-kill_line() {
-	insert(this, "+{End}^x")
+;; Insert the given keys and deactivate the mark.
+finalize_mark(keys) {
+	insert(this, keys)
 	set_mark(false)
 }
 
