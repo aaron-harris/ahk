@@ -95,9 +95,15 @@ class Keymap {
 	;; Contexts in which this keymap should be active.
 	contexts := []
 	
+	;; List of child keymaps.
+	;;
+	;; A parent keymap is active in any context in which its children
+	;; are active.
+	children := []
+	
 	;; Construct an empty keymap.
 	;;
-	;; If the context parameter is supplied, the keymap is contextual
+	;; If the context parameter is truthy, the keymap is contextual
 	;; and will only be active when that context is in effect, as
 	;; determined by the `winActive` function (the context parameter is
 	;; a `winTitle` string).  Contexts without a classifier like
@@ -116,11 +122,13 @@ class Keymap {
 	;;
 	;; Any other truthy value, or omitted:
 	;;   Add the keymap as an ordinary local keymap.
-	__New(context := "A", register := true) {
+	__New(context, register := true) {
 		global local_keymaps
 		global family_keymaps
 		
-		this.contexts.push(context)
+		if (context) {
+			this.contexts.push(context)
+		}
 		
 		if (register == "family") {
 			family_keymaps.push(this)
@@ -137,9 +145,16 @@ class Keymap {
 				return true
 			}
 		}
+		
+		for _, child in this.children {
+			if child.isActive() {
+				return true
+			}
+		}
+		
 		return false
 	}
-	
+
 	;; Default action to take for keys with no binding.
 	;;
 	;; Return true if this action should be considered as consuming the
@@ -197,6 +212,14 @@ class Keymap {
 	;; previously registered contexts.
 	addContext(context) {
 		this.contexts.push(context)
+	}
+	
+	;; Associate this keymap with the given child keymap.
+	;;
+	;; A parent keymap is automatically active whenever its child is, so
+	;; that a given context need only be registered with the child.
+	addChild(child) {
+		this.children.push(child)
 	}
 }
 
