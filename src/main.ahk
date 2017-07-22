@@ -26,9 +26,10 @@ SendMode Input
 
 ;; App families
 #Include tabs.ahk
+#Include editing.ahk
 
 ;; App-specific functionality
+#Include ahk_studio.ahk
 #Include explorer.ahk
 #Include firefox.ahk
 #Include mediamonkey.ahk
-#Include editing.ahk

@@ -97,7 +97,9 @@ class Keymap {
 	;; If the context parameter is supplied, the keymap is contextual
 	;; and will only be active when that context is in effect, as
 	;; determined by the `winActive` function (the context parameter is
-	;; a `winTitle` string).
+	;; a `winTitle` string).  Contexts without a classifier like
+	;; "ahk_class" or "ahk_exe" are matched against the window title as
+	;; regular expressions.
 	;;
 	;; The register parameter handles whether and how this keymap should
 	;; be added to the list of local keymaps.  Possible values are as
@@ -126,6 +128,7 @@ class Keymap {
 	
 	;; Return true if the keymap should be active right now.
 	isActive() {
+		SetTitleMatchMode, RegEx
 		for _, context in this.contexts {
 			if winActive(context) {
 				return true

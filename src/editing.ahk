@@ -42,7 +42,6 @@ editing_keymap.remap("", "^y", "^v")
 ;; Undo
 editing_keymap.remap("", "^/", "^z")
 
-
 ;; Minor apps in this family:
 editing_keymap.addContext("ahk_class Notepad")
 
