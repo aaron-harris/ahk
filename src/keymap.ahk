@@ -66,7 +66,10 @@ all_modifiers := [ ""
 ;;
 ;; #s - Suspend hotkey needs to be native so it doesn't suspend itself.
 ;; !Tab, !+Tab - Alt-tab functionality is tetchy when handled in a keymap.
-blacklist := {"#s": true, "!Tab": true, "!+Tab": true}
+;; #Left, etc. - Window snapping is also tetchy
+blacklist := {"#s": true
+	, "!Tab": true, "!+Tab": true
+	, "#Left": true, "#Right": true, "#Up": true, "#Down": true}
 
 ;; Make all hotkeys use the global keymap.
 for _, key in all_keys {
