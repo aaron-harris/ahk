@@ -7,6 +7,11 @@
 ahk_studio_keymap := new Keymap("^AHK Studio")
 editing_keymap.addContext("^AHK Studio")
 
+;; Use `C-[` and `C-]` to navigate between files.
+;; Setting these hotkeys directly in AHK Studio doesn't seem to work.
+ahk_studio_keymap.remap("", "^[", "!{Left}")
+ahk_studio_keymap.remap("", "^]", "!{Right}")
+
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
 Goto ahk_studio_include
@@ -21,6 +26,8 @@ Goto ahk_studio_include
 
 ^a::
 ^e::
+^[::
+^]::
 	return
 
 #InputLevel 0
