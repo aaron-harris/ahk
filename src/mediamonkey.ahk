@@ -9,10 +9,12 @@
 mediamonkey_props_keymap := new Keymap("ahk_class TFSongProperties")
 mediamonkey_props_keymap.remap("", "+{Enter}", "|")
 
-mediamonkey_keymap := new Keymap("ahk_exe MediaMonkey.exe")
-
-tabs_keymap.addContext("ahk_exe MediaMonkey.exe")
-
+mediamonkey_context := "ahk_exe MediaMonkey.exe"
+mediamonkey_keymap := new Keymap(mediamonkey_context)
+register_context(mediamonkey_context, [
+	, exit_keymap
+	, tabs_keymap])
+	
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
 Goto mediamonkey_include

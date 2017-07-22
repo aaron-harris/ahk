@@ -25,8 +25,9 @@ SendMode Input
 #Include emacs.ahk
 
 ;; App families
-#Include tabs.ahk
 #Include editing.ahk
+#Include exit.ahk
+#Include tabs.ahk
 
 ;; App-specific functionality
 #Include ahk_studio.ahk

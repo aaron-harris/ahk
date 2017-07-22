@@ -261,6 +261,13 @@ clean_prefix() {
 	prefix.next := ""
 }
 
+;; Register the given context with each of the given keymaps.
+register_context(context, keymaps) {
+	for _, keymap in keymaps {
+		keymap.addContext(context)
+	}
+}
+
 ;;;;====================================================================
 ;;;; End keymap.ahk
 keymap_include:
