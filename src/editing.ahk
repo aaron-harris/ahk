@@ -14,11 +14,16 @@ navigation_keymap.addChild(editing_keymap)
 editing_keymap.remap("", "^o", "{Enter}{Left}")
 
 ;; Kill/delete
-editing_keymap.remap("", "^d", "{Delete}")
-editing_keymap.remap("", "!d", "^+{Right}^x")
 editing_keymap.bind("", "^w", Func("finalize_mark").bind("^x"))
 editing_keymap.bind("", "!w", Func("copy_region"))
 editing_keymap.bind("", "^k", Func("finalize_mark").bind("+{End}^x"))
+editing_keymap.remap("", "^d", "{Delete}")
+    ;; Note that the semantics of `M-d` and `M-DEL` are different from
+	;; Emacs, because of the difficulty of clearing the selection.
+	;; In the presence of an active selection, these commands just
+	;; modify that selection (possibly shrinking it) and then cut.
+editing_keymap.bind("", "!d", Func("finalize_mark").bind("^+{Right}^x"))
+editing_keymap.bind("", "!Backspace", Func("finalize_mark").bind("^+{Left}^x"))
 
 ;; Yank
 editing_keymap.bind("", "^y", Func("finalize_mark").bind("^v"))
