@@ -4,7 +4,7 @@
 
 ;;; This file contains hotkeys and hotstrings for use in Firefox.
 
-firefox_context := "ahk_class MozillaWindowClass"
+firefox_context := "ahk_exe firefox.exe"
 firefox_keymap := new Keymap(firefox_context)
 register_context(firefox_context, [
 	, editing_keymap
