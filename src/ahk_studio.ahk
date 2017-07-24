@@ -4,8 +4,11 @@
 
 ;;; This file contains hotkey definitions for use in AHK Studio.
 
+ahk_studio_context := "^AHK Studio"
 ahk_studio_keymap := new Keymap("^AHK Studio")
-editing_keymap.addContext("^AHK Studio")
+register_context(ahk_studio_context, [
+	, editing_keymap,
+	, exit_keymap])
 
 ;; Use `C-[` and `C-]` to navigate between files.
 ;; Setting these hotkeys directly in AHK Studio doesn't seem to work.
