@@ -13,7 +13,7 @@
 ;;; `A-S-<prior>` for "move current tab backward"
 
 ;; The keymap.
-tabs_keymap := new Keymap(null, "family")
+tabs_keymap := new Keymap("Tabs family", null, "family")
 
 ;; Use `C-[` and `C-]` to navigate between tabs.
 tabs_keymap.remap("", "^[", "{Blind}^+{Tab}")

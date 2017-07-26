@@ -4,30 +4,28 @@
 
 ;;; This file contains hotkeys and hotstrings for use in Firefox.
 
-firefox_context := "ahk_exe firefox.exe"
-firefox_keymap := new Keymap(firefox_context)
-register_context(firefox_context, [
+firefox := new App("Firefox", "ahk_exe firefox.exe"
 	, editing_keymap
 	, exit_keymap
-	, tabs_keymap])
+	, tabs_keymap)
 
 ;; Use `C-[` and `C-]` to navigate between tabs.
-firefox_keymap.remap("", "^[", "{Blind}^+{Tab}")
-firefox_keymap.remap("", "^]", "{Blind}^{Tab}")
+firefox.keymap.remap("", "^[", "{Blind}^+{Tab}")
+firefox.keymap.remap("", "^]", "{Blind}^{Tab}")
 
 ;; Use `M-[` and `M-]` to rearrange tabs.
-firefox_keymap.remap("", "![", "^+{PgUp}")
-firefox_keymap.remap("", "!]", "^+{PgDn}")
+firefox.keymap.remap("", "![", "^+{PgUp}")
+firefox.keymap.remap("", "!]", "^+{PgDn}")
 
 ;; Bind `M-p` and `M-n` to up and down, for scrolling.
-firefox_keymap.remap("", "!p", "{Up}")
-firefox_keymap.remap("", "!n", "{Down}")
+firefox.keymap.remap("", "!p", "{Up}")
+firefox.keymap.remap("", "!n", "{Down}")
 
 ;; Use `M-g` for refresh.
-firefox_keymap.remap("", "!g", "{F5}")
+firefox.keymap.remap("", "!g", "{F5}")
 
 ;; Use `M-x` to select the address bar.
-firefox_keymap.remap("", "!x", "{F6}")
+firefox.keymap.remap("", "!x", "{F6}")
 
 ;; Tab manipulation commands:
 ;; `C-x 0`: "close this tab"
@@ -35,10 +33,10 @@ firefox_keymap.remap("", "!x", "{F6}")
 ;;   https://addons.mozilla.org/en-US/firefox/addon/close-other-tabs/
 ;; `C-x 3`: "duplicate tab" uses this addon:
 ;;   https://addons.mozilla.org/en-US/firefox/addon/duplicate-tab-hotkey/
-firefox_keymap.bind("", "^x", Func("prefix_key"))
-firefox_keymap.remap("^x", "0", "^{F4}")
-firefox_keymap.bind("^x", "1", Func("close_other_tabs"))
-firefox_keymap.remap("^x", "3", "^k")
+firefox.keymap.bind("", "^x", Func("prefix_key"))
+firefox.keymap.remap("^x", "0", "^{F4}")
+firefox.keymap.bind("^x", "1", Func("close_other_tabs"))
+firefox.keymap.remap("^x", "3", "^k")
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section

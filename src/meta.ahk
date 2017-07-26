@@ -17,12 +17,14 @@ Goto meta_include
 ;;
 ;; This is usable even on machines where we can't run Window Spy for
 ;; lack of administrative privileges.
+#h::
 ahk_show_class() {
 	WinGetClass, class, A
 	MsgBox % "The active window's class is " . class
 	return
 }
 
+#k::
 ahk_list_hotkeys() {
 	ListHotkeys
 }

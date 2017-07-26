@@ -24,7 +24,7 @@
 prefix := {keys: "", next: ""}
 
 ;; The global keymap.
-global_keymap := new Keymap("A", false)
+global_keymap := new Keymap("Global keymap", "A", false)
 global_keymap.default_action := Func("insert")
 
 ;; The array of local keymaps.
@@ -36,12 +36,6 @@ local_keymaps := []
 ;; than other local keymaps, so that each app can override individual
 ;; bindings for its family.
 family_keymaps := []
-
-;; The array of contexts in which keymaps should not be used.
-no_keymap_contexts := [
-	, "ahk_exe idea64.exe"] ;; IntelliJ
-
-setup_keymaps()
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
@@ -83,9 +77,11 @@ class Keymap {
 	;;
 	;; Any other truthy value, or omitted:
 	;;   Add the keymap as an ordinary local keymap.
-	__New(context, register := true) {
+	__New(name, context, register := true) {
 		global local_keymaps
 		global family_keymaps
+		
+		this.name := name
 		
 		if (context) {
 			this.contexts.push(context)
@@ -100,7 +96,6 @@ class Keymap {
 	
 	;; Return true if the keymap should be active right now.
 	isActive() {
-		SetTitleMatchMode, RegEx
 		for _, context in this.contexts {
 			if winActive(context) {
 				return true
@@ -115,7 +110,7 @@ class Keymap {
 		
 		return false
 	}
-
+	
 	;; Default action to take for keys with no binding.
 	;;
 	;; Return true if this action should be considered as consuming the
@@ -184,6 +179,70 @@ class Keymap {
 	}
 }
 
+class App {
+	
+	__New(name, context, families*) {
+		this.name := name
+		this.context := context
+		this.keymap := new Keymap(name, context)
+		for _, family in families {
+			family.addContext(context)
+		}
+		this._initialize_hotkeys()
+	}
+	
+	;; Make all (reasonable) hotkeys
+	_initialize_hotkeys() {
+		;; Limit all hotkeys to the context of this app.
+		context := this.context
+		
+		;; A list of all hotkeys we want to use in our keymap.  No effort is made
+		;; to support non-US keyboard layouts.
+		all_keys := [
+			, "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"
+			, "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
+			, "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
+			, "``", "-", "=", "[", "]", "\", ";", "'", ",", ".", "/"
+			, "Space", "Tab", "Enter", "Esc", "Backspace"
+			, "Del", "Ins", "Home", "End", "PgUp", "PgDn"
+			, "Up", "Down", "Left", "Right"
+			, "Numpad1", "Numpad2", "Numpad3", "Numpad4", "Numpad5"
+			, "Numpad6", "Numpad7", "Numpad8", "Numpad9", "Numpad0"
+			, "NumpadAdd", "NumpadSub", "NumpadMult", "NumpadDiv"
+			, "NumpadDot", "NumpadEnter", "NumpadClear"
+			, "NumpadDel", "NumpadIns", "NumpadHome", "NumpadEnd"
+			, "NumpadUp", "NumpadDown", "NumpadLeft", "NumpadRight"
+			, "F1", "F2", "F3", "F4", "F5", "F6"
+			, "F7", "F8",	"F9", "F10", "F11", "F12"]
+		
+		;; A list of all modifier keys, and their most common combinations.
+		all_modifiers := [ ""
+			, "^", "!", "+", "#"
+			, "^+", "^!", "!+", "^!+"]
+		
+		;; Hotkeys we don't want to use the keymap for, to work around some kind
+		;; of technical limitation.
+		;;
+		;; #s - Suspend hotkey needs to be native so it doesn't suspend itself.
+		;; !Tab, !+Tab - Alt-tab functionality is tetchy when handled in a keymap.
+		;; #Left, etc. - Window snapping is also tetchy
+		blacklist := {"#s": true
+			, "!Tab": true, "!+Tab": true
+			, "#Left": true, "#Right": true, "#Up": true, "#Down": true}
+		
+		;; Make all hotkeys use the global keymap.
+		for _, key in all_keys {
+			for _, modifier in all_modifiers {
+				hkey := modifier . key
+				if (!blacklist[hkey]) {
+					Hotkey, IfWinActive, % this.context
+					Hotkey % modifier . key, keymap_lookup, I1
+				}
+			}
+		}
+	}
+}
+
 ;; Wrap key names in braces, for use with Send.
 brace_key(key) {
 	return RegExReplace(key, "([!+#^]*)(.+)", "$1{$2}")
@@ -246,73 +305,6 @@ clean_prefix() {
 	
 	prefix.keys := prefix.next
 	prefix.next := ""
-}
-
-;; Register the given context with each of the given keymaps.
-register_context(context, keymaps) {
-	for _, keymap in keymaps {
-		keymap.addContext(context)
-	}
-}
-
-;; Return true if keymaps should be used in the current context.
-keymaps_active() {
-	global no_keymap_contexts
-	for _, context in no_keymap_contexts {
-		if(winActive(context)) {
-			return false
-		}
-	}
-	return true
-}
-
-;; Keymap setup function.
-setup_keymaps() {
-	;; A list of all hotkeys we want to use in our keymap.  No effort is made
-	;; to support non-US keyboard layouts.
-	all_keys := [
-		, "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"
-		, "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
-		, "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
-		, "``", "-", "=", "[", "]", "\", ";", "'", ",", ".", "/"
-		, "Space", "Tab", "Enter", "Esc", "Backspace"
-		, "Del", "Ins", "Home", "End", "PgUp", "PgDn"
-		, "Up", "Down", "Left", "Right"
-		, "Numpad1", "Numpad2", "Numpad3", "Numpad4", "Numpad5"
-		, "Numpad6", "Numpad7", "Numpad8", "Numpad9", "Numpad0"
-		, "NumpadAdd", "NumpadSub", "NumpadMult", "NumpadDiv"
-		, "NumpadDot", "NumpadEnter", "NumpadClear"
-		, "NumpadDel", "NumpadIns", "NumpadHome", "NumpadEnd"
-		, "NumpadUp", "NumpadDown", "NumpadLeft", "NumpadRight"
-		, "F1", "F2", "F3", "F4", "F5", "F6"
-		, "F7", "F8",	"F9", "F10", "F11", "F12"]
-	
-	;; A list of all modifier keys, and their most common combinations.
-	all_modifiers := [ ""
-		, "^", "!", "+", "#"
-		, "^+", "^!", "!+", "^!+"]
-	
-	;; Hotkeys we don't want to use the keymap for, to work around some kind
-	;; of technical limitation.
-	;;
-	;; #s - Suspend hotkey needs to be native so it doesn't suspend itself.
-	;; !Tab, !+Tab - Alt-tab functionality is tetchy when handled in a keymap.
-	;; #Left, etc. - Window snapping is also tetchy
-	blacklist := {"#s": true
-		, "!Tab": true, "!+Tab": true
-		, "#Left": true, "#Right": true, "#Up": true, "#Down": true}
-	
-	;; Make all hotkeys use the global keymap.
-	predicate := Func("keymaps_active")
-	for _, key in all_keys {
-		for _, modifier in all_modifiers {
-			hkey := modifier . key
-			if (!blacklist[hkey]) {
-				Hotkey If, % predicate
-				Hotkey % modifier . key, keymap_lookup
-			}
-		}
-	}
 }
 
 ;;;;====================================================================

@@ -7,7 +7,7 @@
 ;;; This keymap is a child of the navigation keymap, so individual apps
 ;;; need only register with this keymap, not both.
 
-editing_keymap := new Keymap(null, "family")
+editing_keymap := new Keymap("Editing family", null, "family")
 navigation_keymap.addChild(editing_keymap)
 
 ;; Editing
@@ -31,9 +31,6 @@ editing_keymap.bind("", "^y", Func("finalize_mark").bind("^v"))
 ;; Undo/redo
 editing_keymap.remap("", "^/", "^z")
 editing_keymap.remap("", "^!/", "^y")
-
-;; Minor apps in this family:
-editing_keymap.addContext("ahk_class Notepad")
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section

@@ -5,7 +5,7 @@
 ;;; This file defines a family keymap for Emacs-style navigation keys,
 ;;; including "transient mark"-style selection.
 
-navigation_keymap := new Keymap(null, "family")
+navigation_keymap := new Keymap("Navigation family", null, "family")
 
 ;; Whether there is an active region at the moment.
 mark := false

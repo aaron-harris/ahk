@@ -1,21 +1,19 @@
 ﻿;;;; AutoHotkey script of Aaron Harris
-;;;; WINDOWS EXPLORER FEATURES
+;;;; MEDIAMONKEY FEATURES
 ;;;;====================================================================
 
-;;; This file defines hotkeys for use in Windows Explorer.
+;; This file contains hotkeys and hotstrings for use in Notepad.
 
-explorer := new App("Windows Explorer", "ahk_exe explorer.exe"
+notepad := new App("Notepad", "ahk_class Notepad"
+	, editing_keymap
 	, exit_keymap)
-
-;; Use `M-u` for "up directory" (`M-<up>`).
-explorer.keymap.remap("", "!u", "!{Up}")
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
-Goto explorer_include
+Goto notepad_include
 ;;;;====================================================================
 
 ;;;;====================================================================
-;;;; End explorer.ahk
-explorer_include:
+;;;; End notepad.ahk
+notepad_include:
 ;;;;====================================================================

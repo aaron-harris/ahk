@@ -4,20 +4,16 @@
 
 ;; This file contains hotkeys and hotstrings for use in MediaMonkey.
 
-;; Use `S-<return>` for pipe in track property window.
-;; This helps with keyboards that have a tall enter key.
-mediamonkey_props_context := "ahk_class TFSongProperties"
-mediamonkey_props_keymap := new Keymap(mediamonkey_props_context)
-editing_keymap.addContext(mediamonkey_props_context)
-
-mediamonkey_props_keymap.remap("", "+{Enter}", "|")
-
-mediamonkey_context := "ahk_exe MediaMonkey.exe"
-mediamonkey_keymap := new Keymap(mediamonkey_context)
-register_context(mediamonkey_context, [
+mediamonkey_props := new App("MediaMonkey properties", "ahk_class TFSongProperties"
+	, editing_keymap)
+mediamonkey := new App("MediaMonkey", "ahk_exe MediaMonkey.exe"
 	, exit_keymap
 	, navigation_keymap
-	, tabs_keymap])
+	, tabs_keymap)
+
+;; Use `S-<return>` for pipe in track property window.
+;; This helps with keyboards that have a tall enter key.
+mediamonkey_props_keymap.remap("", "+{Enter}", "|")
 	
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
@@ -25,6 +21,6 @@ Goto mediamonkey_include
 ;;;;====================================================================
 	
 ;;;;====================================================================
-;;;; End access.ahk
+;;;; End mediamonkey.ahk
 mediamonkey_include:
 ;;;;====================================================================

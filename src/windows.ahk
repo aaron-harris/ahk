@@ -13,6 +13,10 @@ global_keymap.bind("", "#Enter"
 Goto windows_include
 ;;;;====================================================================
 
+#Enter::
+	remove_hotkey("^x@s{Enter}")
+	return
+
 ;; Function to remove a pre-existing hotkey and send a key sequence to
 ;; Emacs, if it is the currently active window.  With use of the prefix
 ;; sequences for modifier keys, this can allow Emacs to reuse the key.

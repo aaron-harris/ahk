@@ -18,7 +18,7 @@ Goto remap_include
 ;; For most machines, this will be handled by the registry instead
 ;; (and this hotkey will be ignored, since there is no way for the
 ;; keyboard to send the CapsLock key.)
-#InputLevel 1
+#InputLevel 2
 CapsLock::LCtrl
 #InputLevel 0
 
