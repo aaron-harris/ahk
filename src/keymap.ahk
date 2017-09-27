@@ -216,8 +216,12 @@ class App {
 			, "F7", "F8",	"F9", "F10", "F11", "F12"]
 		
 		;; A list of all modifier keys, and their most common combinations.
+		;;
+		;; The Windows key is intentionally excluded, because I tend to use that
+		;; key for app launches, and those need to be more global than any
+		;; keymap.
 		all_modifiers := [ ""
-			, "^", "!", "+", "#"
+			, "^", "!", "+",
 			, "^+", "^!", "!+", "^!+"]
 		
 		;; Hotkeys we don't want to use the keymap for, to work around some kind
