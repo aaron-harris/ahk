@@ -36,4 +36,5 @@ SendMode Input
 #Include app/firefox.ahk
 #Include app/mediamonkey.ahk
 #Include app/notepad.ahk
+#Include app/rssowl.ahk
 #Include app/texniccenter.ahk
