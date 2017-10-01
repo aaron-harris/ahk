@@ -25,14 +25,14 @@ SendMode Input
 #Include emacs.ahk
 
 ;; App families
-#Include navigation.ahk
-#Include editing.ahk
-#Include exit.ahk
-#Include tabs.ahk
+#Include family/navigation.ahk
+#Include family/editing.ahk
+#Include family/exit.ahk
+#Include family/tabs.ahk
 
 ;; App-specific functionality
-#Include ahk_studio.ahk
-#Include explorer.ahk
-#Include firefox.ahk
-#Include mediamonkey.ahk
-#Include notepad.ahk
+#Include app/ahk_studio.ahk
+#Include app/explorer.ahk
+#Include app/firefox.ahk
+#Include app/mediamonkey.ahk
+#Include app/notepad.ahk
