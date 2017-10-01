@@ -5,7 +5,8 @@
 ;;; This file contains hotkey definitions for use in RSSOwl
 
 rssowl := new App("RSSOwl", "ahk_exe RSSOwl.exe"
-	, navigation_keymap)
+	, navigation_keymap
+	, exit_keymap)
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
