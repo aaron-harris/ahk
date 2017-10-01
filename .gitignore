@@ -1,2 +1,2 @@
-# AHK Studio's backup folder
-/src/backup/
+# AHK Studio's backup folders
+/src/**/backup/
