@@ -27,16 +27,9 @@ firefox.keymap.remap("", "!g", "{F5}")
 ;; Use `M-x` to select the address bar.
 firefox.keymap.remap("", "!x", "{F6}")
 
-;; Tab manipulation commands:
-;; `C-x 0`: "close this tab"
-;; `C-x 1`: "close other tabs" uses this addon:
-;;   https://addons.mozilla.org/en-US/firefox/addon/close-other-tabs/
-;; `C-x 3`: "duplicate tab" uses this addon:
-;;   https://addons.mozilla.org/en-US/firefox/addon/duplicate-tab-hotkey/
+;; Use `C-x 0` for "close this tab"
 firefox.keymap.bind("", "^x", Func("prefix_key"))
 firefox.keymap.remap("^x", "0", "^{F4}")
-firefox.keymap.bind("^x", "1", Func("close_other_tabs"))
-firefox.keymap.remap("^x", "3", "^k")
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
