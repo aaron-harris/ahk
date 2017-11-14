@@ -27,9 +27,16 @@ firefox.keymap.remap("", "!g", "{F5}")
 ;; Use `M-x` to select the address bar.
 firefox.keymap.remap("", "!x", "{F6}")
 
-;; Use `C-x 0` for "close this tab"
-firefox.keymap.bind("", "^x", Func("prefix_key"))
-firefox.keymap.remap("^x", "0", "^{F4}")
+;; Establish pass-through keys for Saka Key extension.  Saka accepts key
+;; sequences directly, so we don't need to translate keys for it, but
+;; AHK prefix keys are swallowed, so we can't use the same prefix key
+;; (here, `C-x`, which is also used as a prefix  by the exit family) in
+;; both AHK and Saka without wiring AHK to re-emit the prefix key as
+;; necessary.
+firefox.bind("", "^x", Func("prefix_key"))
+firefox.keymap.remap("^x", "0", "^x0")  ;; Close this tab
+firefox.keymap.remap("^x", "1", "^x1")  ;; Close other tabs
+firefox.keymap.remap("^x", "3", "^x3")  ;; Duplicate tab
 
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
