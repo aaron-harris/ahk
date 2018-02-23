@@ -32,9 +32,15 @@ SendMode Input
 
 ;; App-specific functionality
 #Include app/ahk_studio.ahk
+#Include app/excel.ahk
 #Include app/explorer.ahk
 #Include app/firefox.ahk
 #Include app/mediamonkey.ahk
+#Include app/neo4j.ahk
 #Include app/notepad.ahk
+#Include app/outlook.ahk
 #Include app/rssowl.ahk
 #Include app/texniccenter.ahk
+#Include app/word.ahk
+
+#Include app\neo4j.ahk
