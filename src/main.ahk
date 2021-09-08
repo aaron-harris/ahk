@@ -32,6 +32,7 @@ SendMode Input
 
 ;; App-specific functionality
 #Include app/ahk_studio.ahk
+#Include app/chrome.ahk
 #Include app/excel.ahk
 #Include app/explorer.ahk
 #Include app/firefox.ahk
