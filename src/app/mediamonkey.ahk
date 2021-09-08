@@ -11,10 +11,6 @@ mediamonkey := new App("MediaMonkey", "ahk_exe MediaMonkey.exe"
 	, navigation_keymap
 	, tabs_keymap)
 
-;; Use `S-<return>` for pipe in track property window.
-;; This helps with keyboards that have a tall enter key.
-mediamonkey_props_keymap.remap("", "+{Enter}", "|")
-	
 ;;;;====================================================================
 ;;;; End Auto-Execute Section
 Goto mediamonkey_include
