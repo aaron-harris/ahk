@@ -36,6 +36,7 @@ SendMode Input
 #Include app/excel.ahk
 #Include app/explorer.ahk
 #Include app/firefox.ahk
+#Include app/mediamonkey.ahk
 #Include app/neo4j.ahk
 #Include app/notepad.ahk
 #Include app/outlook.ahk
