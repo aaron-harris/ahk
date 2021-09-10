@@ -230,9 +230,11 @@ class App {
 		;; #s - Suspend hotkey needs to be native so it doesn't suspend itself.
 		;; !Tab, !+Tab - Alt-tab functionality is tetchy when handled in a keymap.
 		;; #Left, etc. - Window snapping is also tetchy
+		;; +Enter - MediaMonkey 5 won't respond properly to >+Enter if we allow this
 		blacklist := {"#s": true
 			, "!Tab": true, "!+Tab": true
-			, "#Left": true, "#Right": true, "#Up": true, "#Down": true}
+			, "#Left": true, "#Right": true, "#Up": true, "#Down": true
+			, "+Enter": true}
 		
 		;; Make all hotkeys use the global keymap.
 		for _, key in all_keys {
